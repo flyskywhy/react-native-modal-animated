@@ -1,5 +1,5 @@
 {
-  "name": "react-native-modal-animated",
+  "name": "@flyskywhy/react-native-modal-animated",
   "version": "0.0.2",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -19,17 +19,17 @@
   ],
   "author": "Rafal Kaczynsky",
   "license": "MIT",
-  "homepage": "https://github.com/rafalkaczynsky/react-native-modal-animated",
+  "homepage": "https://github.com/flyskywhy/react-native-modal-animated",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rafalkaczynsky/react-native-modal-animated.git"
+    "url": "git+https://github.com/flyskywhy/react-native-modal-animated.git"
   },
   "devDependencies": {
     "babel-jest": "23.0.1",
     "babel-preset-react-native": "4.0.0",
     "jest": "23.1.0",
-    "react": ">=15.0.0",
-    "react-native": ">=0.24.0",
+    "react": ">=16.0.0",
+    "react-native": ">=0.60.0",
     "react-test-renderer": "16.3.1"
   },
   "jest": {
@@ -37,7 +37,7 @@
   },
   "description": "Simple and powerfull component enhances the original react-native modal by adding animations and many possible customizations while still providing nice interface",
   "bugs": {
-    "url": "https://github.com/rafalkaczynsky/react-native-modal-animated/issues"
+    "url": "https://github.com/flyskywhy/react-native-modal-animated/issues"
   },
   "main": "index.js",
   "dependencies": {}

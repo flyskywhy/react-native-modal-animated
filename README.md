@@ -1,13 +1,17 @@
-# react-native-modal-animated
+# @flyskywhy/react-native-modal-animated
 
 
-An animated and highly customizable react-native modal.  
-  
+An animated and highly customizable react-native modal, use Animated.View instead of a separate activity like react-native-modal so work with react-native-gesture-handler perfectly.
+
+Forked from [rafalkaczynsky/react-native-modal-animated](https://github.com/rafalkaczynsky/react-native-modal-animated), and replaced `componentWillReceiveProps` by React Hooks to support latest React.
+
+Thanks to rafalkaczynsky, now we can perform a workaround for react-native-gesture-handler [Doesn't work in a modal](https://github.com/software-mansion/react-native-gesture-handler/issues/139) issue :P
 
 ## Features
 
 * Smooth enter/exit animations
 * Plain simple and flexible APIs
+* Work with react-native-gesture-handler perfectly
 
 ## Demo
 
@@ -19,15 +23,15 @@ An animated and highly customizable react-native modal.
 
 ## Setup
 
-This library is available on npm, install it with: `npm install --save react-native-modal-animated` or `yarn add react-native-modal-animated`.
+This library is available on npm, install it with: `npm install --save @flyskywhy/react-native-modal-animated` or `yarn add @flyskywhy/react-native-modal-animated`.
 
 ## Usage
 
 
-1. Import react-native-modal-animated:
+1. Import @flyskywhy/react-native-modal-animated:
 
 ```javascript
-import {AnimatedModal} from "react-native-modal-animated";
+import {AnimatedModal} from "@flyskywhy/react-native-modal-animated";
 ```
 
 2. Create a modal and nest its content inside of it:
@@ -63,11 +67,11 @@ render () {
 ```
 
 The `visible` prop is the only prop you'll really need to make the animated modal work: you should control this prop value by saving it in your state and setting it to `true` or `false` when needed.
-However is recomened to see a complete example below. 
+However is recomened to see a complete example below.
 ## A complete example
 
 The following example consists in a component (`App`) with a button and a modal.
-The modal is controlled by the `modalVisible` state variable and it is initially hidden, since its value is `false`.  
+The modal is controlled by the `modalVisible` state variable and it is initially hidden, since its value is `false`.
 Once the button is pressed, sets `modalVisible` to true, making the modal visible.  Sets `modalVisible` to false, hiding the modal.
 To do that you can add buttom  inside the modal or make usage of prop onBackdropPress , as shown below .
 
@@ -80,7 +84,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-import { AnimatedModal } from 'react-native-animated-modal';
+import { AnimatedModal } from '@flyskywhy/react-native-modal-animated';
 
 export default class App extends Component {
   constructor(props) {
@@ -114,9 +118,9 @@ export default class App extends Component {
             <Text>
               I am AnimatedModal
             </Text>
-            <Text 
+            <Text
               style={{
-                fontWeight: 'bold', 
+                fontWeight: 'bold',
                 marginTop: 10}}
              >
               horizontal
@@ -149,7 +153,7 @@ const styles = StyleSheet.create({
   },
   modalCard: {
     width: '70%',
-    height: 150, 
+    height: 150,
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',

@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Animated, Easing, TouchableOpacity, StyleSheet } from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Animated, Easing, TouchableOpacity, StyleSheet} from 'react-native';
 export interface AnimatedModalProps {
   noAnimation?: boolean;
   visible: boolean;
@@ -9,180 +9,155 @@ export interface AnimatedModalProps {
   duration?: number;
   onBackdropPress: () => void;
 }
-export interface AnimatedModalState {
-  visible: boolean;
-}
-export default class AnimatedModal extends Component<
-  AnimatedModalProps,
-  AnimatedModalState
-> {
-  visibility: Animated.Value;
-  state;
-  props;
-  setState;
+export default function AnimatedModal(props: AnimatedModalProps) {
+  const [visible, setVisible] = useState(props.visible);
+  const visibility = useRef(new Animated.Value(props.isible ? 1 : 0));
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      visible: props.visible
-    };
-  }
-
-  componentWillMount() {
-    this.visibility = new Animated.Value(this.props.visible ? 1 : 0);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.visible) {
-      this.setState({ visible: true });
+  useEffect(() => {
+    if (props.visible) {
+      setVisible(true);
     }
-    Animated.timing(this.visibility, {
-      toValue: nextProps.visible ? 1 : 0,
+    Animated.timing(visibility.current, {
+      toValue: props.visible ? 1 : 0,
       easing: Easing.cubic,
-      duration: this.props.duration ? this.props.duration : 300
+      duration: props.duration ? props.duration : 300,
+      useNativeDriver: true,
     }).start(() => {
-      this.setState({ visible: nextProps.visible });
+      setVisible(props.visible);
     });
+  }, [props.visible, props.duration]);
+
+  const {style, children, ...rest} = props;
+
+  let containerStyle, positionStyle;
+
+  const defaultAnimationStyle = {
+    opacity: visibility.current.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+    }),
+    transform: [
+      {
+        scale: visibility.current.interpolate({
+          inputRange: [0, 1],
+          outputRange: [1.1, 1],
+        }),
+      },
+    ],
+  };
+
+  const varticalFlipAnimation = {
+    opacity: visibility.current.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+    }),
+    transform: [
+      {
+        rotateX: visibility.current.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['270deg', '360deg'],
+        }),
+      },
+    ],
+  };
+
+  const flipAndScaleAnimation = {
+    opacity: visibility.current.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+    }),
+    transform: [
+      {
+        rotateX: visibility.current.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['0deg', '360deg'],
+        }),
+      },
+      {
+        scale: visibility.current.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 1],
+        }),
+      },
+    ],
+  };
+
+  const horizontalFlipAnimation = {
+    opacity: visibility.current.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+    }),
+    transform: [
+      {
+        rotateY: visibility.current.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['270deg', '360deg'],
+        }),
+      },
+    ],
+  };
+
+  switch (props.animationType) {
+    case 'vertical':
+      containerStyle = varticalFlipAnimation;
+      break;
+
+    case 'horizontal':
+      containerStyle = horizontalFlipAnimation;
+      break;
+
+    case 'flipAndScale':
+      containerStyle = flipAndScaleAnimation;
+      break;
+
+    default:
+      containerStyle = defaultAnimationStyle;
+      break;
   }
 
-  render() {
-    const { visible, style, children, ...rest } = this.props;
+  switch (props.modalCardPosition) {
+    case 'center':
+      positionStyle = styles.centerStyle;
+      break;
 
-    let containerStyle, positionStyle;
+    case 'bottom':
+      positionStyle = styles.bottomStyle;
+      break;
 
-    const defaultAnimationStyle = {
-      opacity: this.visibility.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, 1]
-      }),
-      transform: [
-        {
-          scale: this.visibility.interpolate({
-            inputRange: [0, 1],
-            outputRange: [1.1, 1]
-          })
-        }
-      ]
-    };
+    case 'top':
+      positionStyle = styles.topStyle;
+      break;
 
-    const varticalFlipAnimation = {
-      opacity: this.visibility.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, 1]
-      }),
-      transform: [
-        {
-          rotateX: this.visibility.interpolate({
-            inputRange: [0, 1],
-            outputRange: ['270deg', '360deg']
-          })
-        }
-      ]
-    };
-
-    const flipAndScaleAnimation = {
-      opacity: this.visibility.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, 1]
-      }),
-      transform: [
-        {
-          rotateX: this.visibility.interpolate({
-            inputRange: [0, 1],
-            outputRange: ['0deg', '360deg']
-          })
-        },
-        {
-          scale: this.visibility.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 1]
-          })
-        }
-      ]
-    };
-
-    const horizontalFlipAnimation = {
-      opacity: this.visibility.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, 1]
-      }),
-      transform: [
-        {
-          rotateY: this.visibility.interpolate({
-            inputRange: [0, 1],
-            outputRange: ['270deg', '360deg']
-          })
-        }
-      ]
-    };
-
-    switch (this.props.animationType) {
-      case 'vertical':
-        containerStyle = varticalFlipAnimation;
-        break;
-
-      case 'horizontal':
-        containerStyle = horizontalFlipAnimation;
-        break;
-
-      case 'flipAndScale':
-        containerStyle = flipAndScaleAnimation;
-        break;
-
-      default:
-        containerStyle = defaultAnimationStyle;
-        break;
-    }
-
-    switch (this.props.modalCardPosition) {
-      case 'center':
-        positionStyle = styles.centerStyle;
-        break;
-
-      case 'bottom':
-        positionStyle = styles.bottomStyle;
-        break;
-
-      case 'top':
-        positionStyle = styles.topStyle;
-        break;
-
-      default:
-        positionStyle = styles.centerStyle;
-        break;
-    }
-    /** */
-
-    const combinedStyle = [
-      !this.props.noAnimation ? containerStyle : null,
-      style
-    ];
-
-    const layerStyle = {
-      position: 'absolute',
-      zIndex: 99,
-      top: 0,
-      bottom: 0,
-      left: 0,
-      right: 0,
-      backgroundColor: `rgba(0,0,0,0.5)`
-    };
-
-    return (
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={this.props.onBackdropPress}
-        style={this.state.visible ? layerStyle : null}
-      >
-        <Animated.View
-          style={[this.state.visible ? combinedStyle : containerStyle, positionStyle]}
-          {...rest}
-        >
-          {this.state.visible ? children : null}
-        </Animated.View>
-      </TouchableOpacity>
-    );
+    default:
+      positionStyle = styles.centerStyle;
+      break;
   }
+  /** */
+
+  const combinedStyle = [!props.noAnimation ? containerStyle : null, style];
+
+  const layerStyle = {
+    position: 'absolute',
+    zIndex: 99,
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: `rgba(0,0,0,0.5)`,
+  };
+
+  return (
+    <TouchableOpacity
+      activeOpacity={1}
+      onPress={props.onBackdropPress}
+      style={visible ? layerStyle : null}>
+      <Animated.View
+        style={[visible ? combinedStyle : containerStyle, positionStyle]}
+        {...rest}>
+        {visible ? children : null}
+      </Animated.View>
+    </TouchableOpacity>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -194,7 +169,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   bottomStyle: {
     position: 'absolute',
@@ -203,7 +178,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 50,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   topStyle: {
     position: 'absolute',
@@ -212,6 +187,6 @@ const styles = StyleSheet.create({
     right: 0,
     top: 50,
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 });
